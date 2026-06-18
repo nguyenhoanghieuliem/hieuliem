@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <video id="bgVideo" autoplay muted loop playsinline>
+    <source src="bg.mp4" type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video nền.
+  </video>
+
+  <audio id="bgMusic" loop preload="auto" autoplay>
+    <source src="bg-music.mp3" type="audio/mpeg" />
+    Trình duyệt của bạn không hỗ trợ nhạc nền.
+  </audio>
+
+  <main class="page">
+    <section class="auth-card" aria-label="Login">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <!-- Đổi tên file avatar ở bên dưới theo tệp bạn có sẵn -->
+          <img class="brand-avatar" src="avatar.png" alt="Avatar" onerror="this.style.display='none'" />
+        </div>
+        <div>
+          <h1 class="brand-title">Welcome To Portfolio</h1>
+          <p class="brand-subtitle">Nguyễn Hoàng Hiếu Liêm · Cyber Security</p>
+          <div class="status-chip">
+            <span class="status-dot"></span>
+            <span>Active</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="form" onsubmit="return false;">
+        <button class="primary" type="button" onclick="return false;">
+          <span>Xem chi tiết hồ sơ tôi</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+      </form>
+
+      <div class="actions">
+        <a class="contact" href="https://zalo.me/0762880421" target="_blank" rel="noopener noreferrer">
+          <i class="fa-solid fa-message"></i>
+          <span>Liên hệ Zalo</span>
+        </a>
+
+        <a class="contact secondary" href="https://www.facebook.com/nguyenhoanghieuliem/" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+          <span>Facebook</span>
+        </a>
+
+
+        <button class="cv" type="button" onclick="showCV()">
+          <i class="fa-regular fa-file" aria-hidden="true"></i>
+          <span>Xem CV</span>
+        </button>
+      </div>
+
+      <p class="hint">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+       Giao diện đang được update...
+      </p>
+    </section>
+  </main>
+
+  <div class="music-control" aria-label="Điều khiển âm lượng nhạc nền">
+    <button id="volumeDown" class="volume-btn" type="button" aria-label="Giảm âm lượng">
+      <i class="fa-solid fa-volume-low"></i>
+    </button>
+    <span class="volume-display" id="volumeValue">45%</span>
+    <button id="volumeUp" class="volume-btn" type="button" aria-label="Tăng âm lượng">
+      <i class="fa-solid fa-volume-high"></i>
+    </button>
+  </div>
+
+  <!-- Modal CV -->
+  <div class="modal" id="cvModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">
+          <i class="fa-regular fa-file" aria-hidden="true"></i>
+          <h2>CV (Xem trước)</h2>
+        </div>
+        <button class="icon-btn" aria-label="Đóng" onclick="closeCV()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Bạn có thể thay file ở đây -->
+        <iframe
+          id="cvFrame"
+          src="cv.pdf"
+          title="CV"
+          loading="lazy"
+        ></iframe>
+
+        <div class="cv-fallback">
+          <p><b>Chưa có file cv.pdf</b>. Hãy đặt file CV tại cùng thư mục với login.html.</p>
+          <p>Gợi ý: đổi src trong <code>iframe</code> theo đúng tên file CV của bạn.</p>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <a class="ghost" href="cv.pdf" target="_blank" rel="noopener noreferrer">Tải/Xem CV</a>
+        <button class="primary" type="button" onclick="closeCV()">
+          <span>Đóng</span>
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword(btn){
+      const wrap = btn.closest('.input-wrap');
+      const input = wrap.querySelector('input[type="password"], input[type="text"]');
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+    }
+
+    function showCV(){
+      const modal = document.getElementById('cvModal');
+      const frame = document.getElementById('cvFrame');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+
+      
+      if(frame && frame.getAttribute('src') === ''){
+        frame.setAttribute('src','cv.pdf');
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCV(){
+      const modal = document.getElementById('cvModal');
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+
+    // Đóng modal khi bấm nền
+    document.addEventListener('click', (e)=>{
+      const modal = document.getElementById('cvModal');
+      if(!modal.classList.contains('open')) return;
+      if(e.target === modal){
+        closeCV();
+      }
+    });
+
+    // ESC
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeCV();
+    });
+
+    // volume nhạc nè ba
+    window.addEventListener('DOMContentLoaded', ()=>{
+      requestAnimationFrame(()=>{
+        document.body.classList.add('loaded');
+      });
+
+      const music = document.getElementById('bgMusic');
+      const volumeDown = document.getElementById('volumeDown');
+      const volumeUp = document.getElementById('volumeUp');
+      const volumeValue = document.getElementById('volumeValue');
+
+      const updateVolumeLabel = ()=>{
+        if (!music || !volumeValue) return;
+        const percentage = Math.round(music.volume * 100);
+        volumeValue.textContent = `${percentage}%`;
+      };
+
+      const initializeMusic = ()=>{
+        if (!music) return;
+        music.volume = 0.05;
+        updateVolumeLabel();
+        
+        // Cố gắng phát nhạc ngay
+        const playPromise = music.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(()=>{
+            // Nếu autoplay bị chặn, thử phát lại sau user interaction
+            const resumeMusic = ()=>{
+              music.play().catch(()=>{});
+              document.removeEventListener('click', resumeMusic);
+              document.removeEventListener('keydown', resumeMusic);
+            };
+            document.addEventListener('click', resumeMusic);
+            document.addEventListener('keydown', resumeMusic);
+          });
+        }
+      };
+
+      const setMusicVolume = (value)=>{
+        if (!music) return;
+        music.volume = Math.min(1, Math.max(0, value));
+        updateVolumeLabel();
+        if (music.paused && music.volume > 0){
+          music.play().catch(()=>{});
+        }
+      };
+
+      if (music){
+        initializeMusic();
+      }
+
+      if (volumeDown){
+        volumeDown.addEventListener('click', ()=>{
+          setMusicVolume((music.volume || 0) - 0.1);
+        });
+      }
+
+      if (volumeUp){
+        volumeUp.addEventListener('click', ()=>{
+          setMusicVolume((music.volume || 0) + 0.1);
+        });
+      }
+
+      if (music){
+        music.addEventListener('volumechange', updateVolumeLabel);
+      }
+    });
+  </script>
+</body>
+</html>
+
